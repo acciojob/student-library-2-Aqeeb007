@@ -1,7 +1,6 @@
 package com.driver.services;
 
-import com.driver.Convetor.AuthorConvertor;
-import com.driver.RequestDto.AuthorRequestDto;
+import com.driver.security.AuthorityConstants;
 import com.driver.models.Author;
 import com.driver.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,9 @@ public class AuthorService {
 
 
     @Autowired
-    AuthorRepository authorRepository1;
+    AuthorRepository authorRepository;
 
-    public void create(AuthorRequestDto author){
-        Author author1 = AuthorConvertor.DtoToEntity(author);
-        authorRepository1.save(author1);
+    public void create(Author author){
+        authorRepository.save(author);
     }
 }

@@ -1,40 +1,52 @@
 package com.driver.controller;
 
+import com.driver.models.Card;
 import com.driver.models.Student;
+import com.driver.repositories.StudentRepository;
+import com.driver.security.AuthorityConstants;
+import com.driver.security.User;
+import com.driver.security.UserRepository;
+import com.driver.services.CardService;
+import com.driver.services.StudentService;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-//Add required annotations
+@RestController
+@RequestMapping("/student")
 public class StudentController {
 
-    //Add required annotations
-    public ResponseEntity getStudentByEmail(@RequestParam("email") String email){
-        return new ResponseEntity<>("Student details printed successfully ", HttpStatus.OK);
+    private static Logger logger = LoggerFactory.getLogger(StudentService.class);
+
+    @Autowired
+    CardService cardService;
+
+    @Autowired
+    StudentRepository studentRepository;
+
+
+    public Student getDetailsByEmail(String email){
+        return studentRepository.findByEmailId(email);
     }
 
-    //Add required annotations
-    public ResponseEntity getStudentById(@RequestParam("id") int id){
-
-        return new ResponseEntity<>("Student details printed successfully ", HttpStatus.OK);
+    public Student getDetailsById(int id){
+        return studentRepository.findById(id).get();
     }
 
-    //Add required annotations
-    public ResponseEntity createStudent(@RequestBody Student student){
-
-        return new ResponseEntity<>("the student is successfully added to the system", HttpStatus.CREATED);
+    public void createStudent(Student student){
+        Card newCard = cardService.createAndReturn(student);
     }
 
-    //Add required annotations
-    public ResponseEntity updateStudent(@RequestBody Student student){
-
-        return new ResponseEntity<>("student is updated", HttpStatus.ACCEPTED);
+    public void updateStudent(Student student){
+        studentRepository.updateStudentDetails(student);
     }
 
-    //Add required annotations
-    public ResponseEntity deleteStudent(@RequestParam("id") int id){
-
-        return new ResponseEntity<>("student is deleted", HttpStatus.ACCEPTED);
+    public void deleteStudent(int id){
+        cardService.deactivateCard(id);
+        studentRepository.deleteCustom(id);
     }
-
 }
